@@ -10,7 +10,7 @@ public class ChronometerDAO extends Chronometer {
     /**
      * Atributos
      */
-    private final static String INSERT = "INSERT INTO chronometer (time) VALUES (?)";
+    private final static String INSERT = "INSERT INTO chronometer (time) VALUES (?,?)";
 
     /**
      * Constructores
@@ -18,11 +18,11 @@ public class ChronometerDAO extends Chronometer {
     public ChronometerDAO() {
         super();
     }
-    public ChronometerDAO(String time) {
-        super(time);
+    public ChronometerDAO(int id, String time) {
+        super(id, time);
     }
     public ChronometerDAO(Chronometer c) {
-        super(c.getTime());
+        super(c.getId(), c.getTime());
     }
 
     /**
@@ -35,10 +35,15 @@ public class ChronometerDAO extends Chronometer {
         if(miCon != null){
             PreparedStatement ps;
             try {
-                ps = miCon.prepareStatement(INSERT);
+                ps = miCon.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, this.time);
                 ps.executeUpdate();
+                ResultSet rs= ps.getGeneratedKeys();
+                if(rs.next()){
+                    this.id=rs.getInt(1);
+                }
                 ps.close();
+                rs.close();
                 result = true;
             }catch(SQLException e) {
                 e.printStackTrace();

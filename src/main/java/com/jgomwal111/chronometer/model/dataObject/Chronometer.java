@@ -9,6 +9,7 @@ public class Chronometer {
     /**
      * Atributos de la clase
      */
+    protected int id;
     protected String time;
     private String toastMessage;
     private List<String> times;
@@ -18,7 +19,8 @@ public class Chronometer {
      */
     public Chronometer() {
     }
-    public Chronometer(String time){
+    public Chronometer(int id, String time){
+        this.id = id;
         this.time = time;
     }
 
@@ -36,6 +38,22 @@ public class Chronometer {
      */
     public void setTime(String time) {
         this.time = time;
+    }
+
+    /**
+     * ID del cronómetro
+     * @return la id que posee cada tiempo
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Método que permite escribir un texto
+     * @param id
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**

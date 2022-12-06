@@ -29,17 +29,6 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        /*Chronometer c = new Chronometer();
-        c.start();
-        do {
-            try {
-                Thread.sleep(1000);
-                System.out.println(c.getTime());
-            } catch (InterruptedException e) {
-                c.setToastMessage(e + "!!Error¡¡");
-            }
-        }while(!c.isInterrupted());*/
-         
         launch();
     }
 }
