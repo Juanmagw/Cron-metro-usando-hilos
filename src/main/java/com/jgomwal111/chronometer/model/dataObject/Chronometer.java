@@ -1,27 +1,30 @@
 package com.jgomwal111.chronometer.model.dataObject;
 
-import javafx.scene.control.Button;
+import javafx.application.Platform;
+import javafx.scene.control.TextField;
 
 import java.util.List;
 
-public class Chronometer {
+public class Chronometer extends Thread{
 
     /**
      * Atributos de la clase
      */
-    protected int id;
+    protected int idChrono;
     protected String time;
-    private String toastMessage;
     private List<String> times;
+
+    private TextField tfChronometer;
 
     /**
      * Constructores de la clase
      */
     public Chronometer() {
     }
-    public Chronometer(int id, String time){
-        this.id = id;
+    public Chronometer(int id, String time, TextField tfChronometer){
+        this.idChrono = id;
         this.time = time;
+        this.tfChronometer = tfChronometer;
     }
 
     /**
@@ -44,24 +47,16 @@ public class Chronometer {
      * ID del cronómetro
      * @return la id que posee cada tiempo
      */
-    public int getId() {
-        return id;
+    public int getIdChrono() {
+        return idChrono;
     }
 
     /**
      * Método que permite escribir un texto
-     * @param id
+     * @param idChrono
      */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Método que permite escribir un texto
-     * @param toastMessage mensaje que saldrá por pantalla
-     */
-    public void setToastMessage(String toastMessage) {
-        this.toastMessage = toastMessage;
+    public void setIdChrono(int idChrono) {
+        this.idChrono = idChrono;
     }
 
     /**
@@ -92,5 +87,23 @@ public class Chronometer {
         int minutes = seconds/60;
         seconds %= 60;
         this.time = hours+":"+minutes+":"+seconds;
+    }
+
+    @Override
+    public void run() {
+
+            int seconds = 0;
+            try{
+                do{
+                    this.timer(++seconds);
+                    tfChronometer.setText(this.getTime());
+                    Thread.sleep(1000);
+                }while(!this.isInterrupted());
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+
+
     }
 }

@@ -21,7 +21,7 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <TextField fx:id="tfChronometer" alignment="CENTER" disable="true" editable="false" layoutX="53.0" layoutY="79.0" prefHeight="90.0" prefWidth="217.0" promptText="00:00:00">
+            <TextField fx:id="tfChronometer" alignment="CENTER" editable="false" layoutX="53.0" layoutY="79.0" prefHeight="90.0" prefWidth="217.0" promptText="00:00:00">
                <font>
                   <Font size="40.0" />
                </font>

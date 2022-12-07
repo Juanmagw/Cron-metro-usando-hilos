@@ -18,12 +18,12 @@ public class ChronometerDAO extends Chronometer {
     public ChronometerDAO() {
         super();
     }
-    public ChronometerDAO(int id, String time) {
+    /*public ChronometerDAO(int id, String time) {
         super(id, time);
     }
     public ChronometerDAO(Chronometer c) {
-        super(c.getId(), c.getTime());
-    }
+        super(c.getIdChrono(), c.getTime());
+    }*/
 
     /**
      * Método para insertar un tiempo del cronómetro
@@ -40,7 +40,7 @@ public class ChronometerDAO extends Chronometer {
                 ps.executeUpdate();
                 ResultSet rs= ps.getGeneratedKeys();
                 if(rs.next()){
-                    this.id=rs.getInt(1);
+                    this.idChrono =rs.getInt(1);
                 }
                 ps.close();
                 rs.close();

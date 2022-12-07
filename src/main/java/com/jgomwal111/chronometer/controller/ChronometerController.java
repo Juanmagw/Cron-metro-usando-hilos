@@ -12,13 +12,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ChronometerController extends Thread implements Initializable {
+public class ChronometerController implements Initializable {
 
     /**
      * Objetos usados para la clase
      */
-    private Chronometer c = new Chronometer();
-    private ChronometerDAO cDAO = new ChronometerDAO(c);
+    private Chronometer c;
+    //private ChronometerDAO cDAO = new ChronometerDAO(c);
 
     /**
      * Elementos FXML
@@ -42,27 +42,12 @@ public class ChronometerController extends Thread implements Initializable {
         imgReset.setVisible(true);
     }
 
-    @Override
-    public void run() {
-        int seconds = 0;
-        try{
-             do{
-                c.timer(++seconds);
-                tfChronometer.setText(c.getTime());
-                Thread.sleep(1000);
-                while(this.isInterrupted()){
-                    cDAO.insert();
-                }
-            }while(!this.isInterrupted());
-        }catch(Exception e){
-            c.setToastMessage(e+"!!Error¡¡");
-        }
-    }
-
     @FXML public void play(){
-        btnPlay.setOnAction(click->{
-            this.start();
-            if(!this.isInterrupted()) {
+        c = new Chronometer(-1,"",tfChronometer);
+            c.start();
+            System.out.println(c.getTime());
+
+            if(!c.isInterrupted()) {
                 btnPlay.setVisible(false);
                 imgPlay.setVisible(false);
                 btnPause.setVisible(true);
@@ -70,13 +55,11 @@ public class ChronometerController extends Thread implements Initializable {
                 btnReset.setVisible(false);
                 imgReset.setVisible(false);
             }
-        });
     }
 
     @FXML public void pause(){
-        btnPause.setOnAction(click->{
-            if(!this.isInterrupted()){
-                this.interrupt();
+            if(!c.isInterrupted()){
+                c.interrupt();
                 btnPlay.setVisible(true);
                 imgPlay.setVisible(true);
                 btnPause.setVisible(false);
@@ -84,12 +67,10 @@ public class ChronometerController extends Thread implements Initializable {
                 btnReset.setVisible(true);
                 imgReset.setVisible(true);
             }
-        });
     }
 
     @FXML public void reset(){
-        btnReset.setOnAction(click->{
-            if(this.isInterrupted()){
+            if(c.isInterrupted()){
                 tfChronometer.setText("00:00:00");
                 btnPlay.setVisible(true);
                 imgPlay.setVisible(true);
@@ -98,7 +79,6 @@ public class ChronometerController extends Thread implements Initializable {
                 btnReset.setVisible(true);
                 imgReset.setVisible(true);
             }
-        });
     }
 
 
