@@ -1,5 +1,6 @@
 package com.jgomwal111.chronometer.controller;
 
+import com.jgomwal111.chronometer.model.dao.ChronometerDAO;
 import com.jgomwal111.chronometer.model.dataObject.Chronometer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        ChronometerDAO cDAO = ChronometerDAO.getInstance();
         launch();
     }
 }

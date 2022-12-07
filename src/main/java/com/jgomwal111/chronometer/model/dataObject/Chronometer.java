@@ -1,30 +1,49 @@
 package com.jgomwal111.chronometer.model.dataObject;
 
-import javafx.application.Platform;
 import javafx.scene.control.TextField;
 
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 import java.util.List;
 
-public class Chronometer extends Thread{
+@XmlRootElement(name="Chronometer")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Chronometer implements Runnable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Atributos de la clase
      */
+    @XmlAttribute(name="ID")
     protected int idChrono;
+    @XmlAttribute(name="Tiempo")
     protected String time;
-    private List<String> times;
-
+    @XmlTransient
+    protected List<String> times;
+    @XmlTransient
     private TextField tfChronometer;
+    @XmlTransient
+    private SolicitaParar parado = new SolicitaParar();
 
     /**
      * Constructores de la clase
      */
     public Chronometer() {
+        this(-1,"",null,null);
     }
-    public Chronometer(int id, String time, TextField tfChronometer){
+    public Chronometer(TextField tfChronometer) {
+        this.tfChronometer = tfChronometer;
+    }
+    public Chronometer(int id, String time){
+        this.idChrono = id;
+        this.time = time;
+    }
+    public Chronometer(int id, String time, TextField tfChronometer, SolicitaParar parado){
         this.idChrono = id;
         this.time = time;
         this.tfChronometer = tfChronometer;
+        this.parado.setParado(false);
     }
 
     /**
@@ -34,7 +53,6 @@ public class Chronometer extends Thread{
     public String getTime() {
         return time;
     }
-
     /**
      * Método que permite escribir un texto
      * @param time
@@ -42,7 +60,6 @@ public class Chronometer extends Thread{
     public void setTime(String time) {
         this.time = time;
     }
-
     /**
      * ID del cronómetro
      * @return la id que posee cada tiempo
@@ -50,7 +67,6 @@ public class Chronometer extends Thread{
     public int getIdChrono() {
         return idChrono;
     }
-
     /**
      * Método que permite escribir un texto
      * @param idChrono
@@ -58,7 +74,6 @@ public class Chronometer extends Thread{
     public void setIdChrono(int idChrono) {
         this.idChrono = idChrono;
     }
-
     /**
      * Lista de los tiempos que ha guardado el cronómetro
      * @return
@@ -66,7 +81,6 @@ public class Chronometer extends Thread{
     public List<String> getTimes() {
         return times;
     }
-
     /**
      * Método para añadir tiempos a la lista
      * @param time tiempo a añadir
@@ -75,6 +89,22 @@ public class Chronometer extends Thread{
         if(time.equals(this.time) && !this.times.contains(time) && time!=null){
             this.times.add(time);
         }
+    }
+
+    public TextField getTfChronometer() {
+        return tfChronometer;
+    }
+
+    public void setTfChronometer(TextField tfChronometer) {
+        this.tfChronometer = tfChronometer;
+    }
+
+    public SolicitaParar getParado() {
+        return parado;
+    }
+
+    public void setParado(SolicitaParar parado) {
+        this.parado = parado;
     }
 
     /**
@@ -91,19 +121,27 @@ public class Chronometer extends Thread{
 
     @Override
     public void run() {
-
-            int seconds = 0;
-            try{
-                do{
-                    this.timer(++seconds);
-                    tfChronometer.setText(this.getTime());
-                    Thread.sleep(1000);
-                }while(!this.isInterrupted());
-            }catch(Exception e){
-                e.printStackTrace();
+    Thread t = new Thread(this);
+    int seconds = 0;
+    try{
+        do{
+            while(!this.parado.getParado()){
+                this.timer(++seconds);
+                tfChronometer.setText(this.getTime());
+                Thread.sleep(1000);
+                this.parado.waiting();
             }
+            }while(!t.isInterrupted());
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
 
-
-
+    @Override
+    public String toString() {
+        return "Chronometer{" +
+                "idChrono=" + idChrono +
+                ", time='" + time + '\'' +
+                '}';
     }
 }

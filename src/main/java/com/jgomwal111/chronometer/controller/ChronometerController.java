@@ -17,8 +17,10 @@ public class ChronometerController implements Initializable {
     /**
      * Objetos usados para la clase
      */
-    private Chronometer c;
+    private Chronometer c = new Chronometer();
     //private ChronometerDAO cDAO = new ChronometerDAO(c);
+    private ChronometerDAO cDAO;
+    Thread t = null;
 
     /**
      * Elementos FXML
@@ -43,34 +45,39 @@ public class ChronometerController implements Initializable {
     }
 
     @FXML public void play(){
-        c = new Chronometer(-1,"",tfChronometer);
-            c.start();
-            System.out.println(c.getTime());
-
-            if(!c.isInterrupted()) {
-                btnPlay.setVisible(false);
-                imgPlay.setVisible(false);
-                btnPause.setVisible(true);
-                imgPause.setVisible(true);
-                btnReset.setVisible(false);
-                imgReset.setVisible(false);
-            }
+        c.setTfChronometer(tfChronometer);
+        if(t==null) {
+            t = new Thread(c);
+            t.start();
+        }
+        if(!t.isInterrupted()) {
+            c.getParado().setParado(false);
+            btnPlay.setVisible(false);
+            imgPlay.setVisible(false);
+            btnPause.setVisible(true);
+            imgPause.setVisible(true);
+            btnReset.setVisible(false);
+            imgReset.setVisible(false);
+        }
     }
 
     @FXML public void pause(){
-            if(!c.isInterrupted()){
-                c.interrupt();
-                btnPlay.setVisible(true);
-                imgPlay.setVisible(true);
-                btnPause.setVisible(false);
-                imgPause.setVisible(false);
-                btnReset.setVisible(true);
-                imgReset.setVisible(true);
-            }
+        if(!t.isInterrupted()){
+            c.getParado().setParado(true);
+            cDAO.save(c);
+            //cDAO.insert();
+            btnPlay.setVisible(true);
+            imgPlay.setVisible(true);
+            btnPause.setVisible(false);
+            imgPause.setVisible(false);
+            btnReset.setVisible(true);
+            imgReset.setVisible(true);
+        }
     }
 
     @FXML public void reset(){
-            if(c.isInterrupted()){
+            if(!t.isInterrupted()){
+                c.getParado().setParado(true);
                 tfChronometer.setText("00:00:00");
                 btnPlay.setVisible(true);
                 imgPlay.setVisible(true);
