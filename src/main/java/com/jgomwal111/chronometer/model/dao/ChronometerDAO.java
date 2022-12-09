@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @XmlRootElement(name="ChronometerDAO")
@@ -46,7 +47,55 @@ public class ChronometerDAO extends Chronometer {
         }
     }
 
-    public void save(Chronometer c){
+    /**
+     * Añade un Cronometro a la lista de Cronometros única.
+     * @param c Cronometro que se quiere añadir.
+     */
+    public boolean addChrono(Chronometer c) {
+        boolean result=false;
+        if(!chronometerList.contains(c) && c!=null) {
+            chronometerList.add(c);
+            result=true;
+        }
+        return result;
+    }
+
+    /**
+     * Muestra a todos los cronometros de la lista de usuarios única.
+     */
+    public boolean showChrono() {
+        boolean result=false;
+        Iterator<Chronometer> it=chronometerList.iterator();
+        while(it.hasNext()) {
+            System.out.println(it.next());
+            result=true;
+        }
+        return result;
+    }
+
+    /**
+     * Borra al cronometro por su id.
+     * @param c cronometro que será borrado.
+     */
+    public boolean deleteChrono(Chronometer c) {
+        boolean result=false;
+        if(chronometerList.contains(c) && c!=null) {
+            chronometerList.remove(c);
+            result=true;
+        }
+        return result;
+    }
+
+    public Chronometer searchById(int id) {
+        for(Chronometer c:chronometerList) {
+            if(c.getIdChrono()==idChrono) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public void save(ChronometerDAO cDAO){
         JAXBContext contexto;
         String chronometerXML = "Chronometer.xml";
         try {
@@ -54,7 +103,7 @@ public class ChronometerDAO extends Chronometer {
             Marshaller m = contexto.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            m.marshal(c, new File(chronometerXML));
+            m.marshal(cDAO, new File(chronometerXML));
         } catch (JAXBException e) {
             new ErrorMessage(e+"");
         }
@@ -68,7 +117,7 @@ public class ChronometerDAO extends Chronometer {
             contexto = JAXBContext.newInstance(ChronometerDAO.class);
             Unmarshaller um = contexto.createUnmarshaller();
             ChronometerDAO newDAO = (ChronometerDAO) um.unmarshal(new File(chronometerXML));
-            chronometers = newDAO.getChronometerList();
+            chronometers = (List<Chronometer>) newDAO.getChronometerList();
 
         } catch (JAXBException ex) {
             ex.printStackTrace();
@@ -78,7 +127,7 @@ public class ChronometerDAO extends Chronometer {
     @Override
     public String toString() {
         return "ChronometerDAO{" +
-                "times=" + times +
+                "times=" + chronometerList +
                 '}';
     }
     /**

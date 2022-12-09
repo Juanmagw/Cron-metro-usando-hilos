@@ -116,7 +116,15 @@ public class Chronometer implements Runnable, Serializable {
         seconds %= 3600;
         int minutes = seconds/60;
         seconds %= 60;
-        this.time = hours+":"+minutes+":"+seconds;
+        if(seconds<10){
+            this.time = hours+":"+minutes+":0"+seconds;
+        }
+        if(minutes<10){
+            this.time = hours+":0"+minutes+":"+seconds;
+        }
+        if(hours<10){
+            this.time = "0"+hours+":"+minutes+":"+seconds;
+            }
     }
 
     @Override

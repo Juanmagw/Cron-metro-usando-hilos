@@ -19,7 +19,7 @@ public class ChronometerController implements Initializable {
      */
     private Chronometer c = new Chronometer();
     //private ChronometerDAO cDAO = new ChronometerDAO(c);
-    private ChronometerDAO cDAO;
+    private ChronometerDAO cDAO = ChronometerDAO.getInstance();
     Thread t = null;
 
     /**
@@ -64,7 +64,8 @@ public class ChronometerController implements Initializable {
     @FXML public void pause(){
         if(!t.isInterrupted()){
             c.getParado().setParado(true);
-            cDAO.save(c);
+            /*cDAO.addChrono(c);
+            cDAO.save(cDAO);*/
             //cDAO.insert();
             btnPlay.setVisible(true);
             imgPlay.setVisible(true);
@@ -76,17 +77,23 @@ public class ChronometerController implements Initializable {
     }
 
     @FXML public void reset(){
-            if(!t.isInterrupted()){
-                c.getParado().setParado(true);
-                tfChronometer.setText("00:00:00");
-                btnPlay.setVisible(true);
-                imgPlay.setVisible(true);
-                btnPause.setVisible(false);
-                imgPause.setVisible(false);
-                btnReset.setVisible(true);
-                imgReset.setVisible(true);
-            }
+        if(!t.isInterrupted()){
+            c.getParado().setParado(true);
+            tfChronometer.setText("00:00:00");
+            t.interrupt();
+            t = null;
+            btnPlay.setVisible(true);
+            imgPlay.setVisible(true);
+            btnPause.setVisible(false);
+            imgPause.setVisible(false);
+            btnReset.setVisible(true);
+            imgReset.setVisible(true);
+        }
     }
 
+    public void close(){
+        t.interrupt();
+        System.exit(0);
+    }
 
 }
